@@ -1,4 +1,6 @@
 const express = require('express');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 const app = express();
 app.use(express.json());
@@ -9,7 +11,7 @@ const database = {
             id: '123',
             name: 'John',
             email: 'john@gmail.com',
-            password: 'cookies',
+            password: 'cookies', //will be deleted
             entries: 0,
             joined: new Date(),
         } , 
@@ -17,10 +19,17 @@ const database = {
             id: '124',
             name: 'Sally',
             email: 'sally@gmail.com',
-            password: 'bananas',
+            password: 'bananas', //will be deleted
             entries: 0,
             joined: new Date(),
         } 
+    ],
+    login: [
+        {
+            id: '987',
+            hash: '',
+            email: 'john@gmail.com',
+        }
     ]
 }
 
@@ -29,6 +38,15 @@ app.get('/', (req , res) => {
 })
 
 app.post('/signin', (req, res) => {
+    // // Load hash from your password DB.
+    // bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
+    //     // result == true
+    // });
+    // bcrypt.compare(someOtherPlaintextPassword, hash, function(err, result) {
+    //     // result == false
+    // });
+
+
     if (req.body.email === database.users[0].email &&
         req.body.password === database.users[0].password) {
             res.json('success');
@@ -40,6 +58,10 @@ app.post('/signin', (req, res) => {
 
 app.post('/register', (req, res) => {
     const { email, name, password } = req.body;
+    // bcrypt.hash(password, saltRounds, function(err, hash) {
+    //     // Store hash in your password DB.
+    //     console.log(hash);
+    // });
     database.users.push({
         id: '125',
         name: name,
