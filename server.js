@@ -2,6 +2,25 @@ const express = require('express');
 const cors = require('cors')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const knex = require('knex');
+
+const db = knex({
+    client: 'pg',
+    connection: {
+      host : '127.0.0.1', //localhost
+      port : 5432,
+      user : 'postgres',
+      password : 'test',
+      database : 'smart-brain'
+    }
+});
+
+// console.log(postgres.select('*').from('users'))
+// ;
+
+db.select('*').from('users').then(data => {
+    console.log(data);
+});
 
 const app = express();
 app.use(express.json());
@@ -65,22 +84,26 @@ app.post('/register', (req, res) => {
     //     // Store hash in your password DB.
     //     console.log(hash);
     // });
-    database.users.push({
-        id: ~~database.users[database.users.length-1].id+1,
-        name: name,
+    // database.users.push({
+    //     id: ~~database.users[database.users.length-1].id+1,
+    //     name: name,
+    //     email: email,
+    //     password: password,
+    //     entries: 0,
+    //     joined: new Date(),
+    // })
+    db('users')
+        .returning('*')
+        .insert({
         email: email,
-        password: password,
-        entries: 0,
-        joined: new Date(),
+        name: name,
+        joined: new Date()
     })
-    let responseObj = {
-        id: database.users[database.users.length-1].id,
-        name: database.users[database.users.length-1].name,
-        email: database.users[database.users.length-1].email,
-        entries: database.users[database.users.length-1].entries,
-        joined: database.users[database.users.length-1].joined,
-    }
-    res.json(responseObj);
+    .then(user => {
+        res.json(user[0]);
+    })
+    .catch(err => res.status(400).json('An error occurred while registering.'))
+    
 })
 
 app.get('/profile/:id', (req, res) => {
