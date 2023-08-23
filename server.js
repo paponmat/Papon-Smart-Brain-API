@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors')
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
 const knex = require('knex');
 
 const db = knex({
@@ -14,9 +13,6 @@ const db = knex({
       database : 'smart-brain'
     }
 });
-
-// console.log(postgres.select('*').from('users'))
-// ;
 
 db.select('*').from('users').then(data => {
     console.log(data);
@@ -78,60 +74,82 @@ app.post('/signin', (req, res) => {
     
 })
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     const { email, name, password } = req.body;
-    // bcrypt.hash(password, saltRounds, function(err, hash) {
-    //     // Store hash in your password DB.
-    //     console.log(hash);
-    // });
-    // database.users.push({
-    //     id: ~~database.users[database.users.length-1].id+1,
-    //     name: name,
-    //     email: email,
-    //     password: password,
-    //     entries: 0,
-    //     joined: new Date(),
-    // })
-    db('users')
-        .returning('*')
-        .insert({
-        email: email,
-        name: name,
-        joined: new Date()
-    })
-    .then(user => {
-        res.json(user[0]);
-    })
-    .catch(err => res.status(400).json('An error occurred while registering.'))
     
-})
+    try {
+        const saltRounds = 10; // Define the number of salt rounds for bcrypt
+        
+        // Hash the password using bcrypt
+        const hashFromBcrypt = await new Promise((resolve, reject) => {
+            bcrypt.hash(password, saltRounds, function(err, hash) {
+                if (err) reject(err);
+                resolve(hash);
+            });
+        });
 
-app.get('/profile/:id', (req, res) => {
-    const { id } = req.params;
-    let found = false;
-    database.users.forEach(user => {
-        if (user.id === id) {
-            found = true;
-            return res.json(user);
-        }
-    })
-    if (!found) {
-        res.status(400).json('not found');
+        // Start a transaction
+        await db.transaction(async trx => {
+            // Insert hashed password and email into 'login' table
+            const login = await db('login')
+                .returning('*')
+                .insert({
+                    hash: hashFromBcrypt,
+                    email: email
+                })
+                .transacting(trx);
+            
+            // Retrieve the registered email
+            const loginEmail = login[0].email;
+            
+            // Insert user information into 'users' table
+            const user = await db('users')
+                .returning('*')
+                .insert({
+                    email: loginEmail,
+                    name: name,
+                    joined: new Date()
+                })
+                .transacting(trx);
+
+            if (user.length > 0 && login.length) {
+                res.json(user[0]);
+            } else {
+                res.status(404).json('Your information cannot be registered');
+            }
+        });
+    } catch (error) {
+        res.status(400).json('An error occurred while registering.');
     }
-})
+});
 
-app.put('/image', (req, res) => {
-    const { id } = req.body;
-    let found = false;
-    database.users.forEach(user => {
-        if (user.id === id) {
-            found = true;
-            user.entries++ ;
-            return res.json(user.entries);
+app.get('/profile/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await db.select('*').from('users').where('id', id);
+        
+        if (user.length > 0) {
+            res.json(user[0]);
+        } else {
+            res.status(404).json('User not found');
         }
-    })
-    if (!found) {
-        res.status(400).json('not found');
+    } catch (error) {
+        res.status(500).json('Internal server error');
+    }
+});
+
+
+app.put('/image', async (req, res) => {
+    const { id } = req.body;
+    try {
+        const entries = await db('users').where('id', id)
+        .increment('entries', 1)
+        .returning('entries');
+        if (entries.length > 0) {
+            res.json(entries[0].entries);
+        }
+    } catch (error) {
+        res.status(400).json('Unable to get entries');
     }
 })
 

@@ -13,3 +13,5 @@ CREATE TABLE login (
 );
 
 SELECT * FROM users;
+
+SELECT * FROM login;
