@@ -3,16 +3,13 @@ const handleProfileId = async (req, res, db) => {
     try {
         const user = await db.select('*').from('users').where('id', id);
         
-        if (user) {
+        if (user.length > 0) {
             res.json(user[0]);
-            console.log('Fetched user:', user);
         } else {
             res.status(404).json('User not found');
-            console.log('Fetched user:', user);
         }
     } catch (error) {
         res.status(500).json('Internal server error');
-        console.log('Fetched user:', user);
     }
 }
 
