@@ -23,17 +23,15 @@ const db = knex({
     }
 });
 
-app.get('/', (req , res) => {
-    res.send('API is working');
-})
+app.get('/', (req , res) => { res.send('API is working'); });
 
-app.post('/signin', (req,res) => { signin.handleSignin(req, res, db, bcrypt) });
+app.post('/signin', (req,res) => { signin.handleSignin(req, res, db, bcrypt); });
 
-app.post('/register', (req,res) => { register.handleRegister(req, res, db, bcrypt) });
+app.post('/register', (req,res) => { register.handleRegister(req, res, db, bcrypt); });
 
-app.put('/image', (req,res) => { image.handleImage(req, res, db) });
+app.put('/image', (req,res) => { image.handleImage(req, res, db); });
 
-app.get('/profile/:id', (req,res) => { profileId.handleProfileId(req, res, db) });
+app.get('/profile/:id', (req,res) => { profileId.handleProfileId(req, res, db); });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=> {
