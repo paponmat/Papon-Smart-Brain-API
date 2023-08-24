@@ -54,9 +54,16 @@ app.post('/register', async (req, res) => {
     const { email, name, password } = req.body;
     
     try {
-        const saltRounds = 10; // Define the number of salt rounds for bcrypt
         
+        // Check if the email already exists in the 'login' table
+        const existingUser = await db('login').where('email', email);
+        if (existingUser.length > 0) {
+            console.log("Email already exists"); // Debug log
+            return res.status(400).json('Email already exists');
+        }
+
         // Hash the password using bcrypt
+        const saltRounds = 10; // Define the number of salt rounds for bcrypt       
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Start a transaction
