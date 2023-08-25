@@ -1,8 +1,16 @@
 const handleRegister = async (req, res, db, bcrypt) => {
     const { email, name, password } = req.body;
+    const isEmailValid= (email) => {
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        return emailPattern.test(email);
+    }
     
     try {
         
+        if ( !email || !name || !password || !isEmailValid(email)) {
+            return res.status(400).json('Incorrect form submission');
+        }
+
         // Check if the email already exists in the 'login' table
         const existingUser = await db('login').where('email', email);
         if (existingUser.length > 0) {
