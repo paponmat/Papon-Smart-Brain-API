@@ -1,4 +1,4 @@
-const handleProfileId = async (req, res, db) => {
+const handleProfile = async (req, res, db) => {
     const { id } = req.params;
     try {
         const user = await db.select('*').from('users').where('id', id);
@@ -14,5 +14,5 @@ const handleProfileId = async (req, res, db) => {
 }
 
 module.exports = {
-    handleProfileId: handleProfileId
+    handleProfile: handleProfile
 };

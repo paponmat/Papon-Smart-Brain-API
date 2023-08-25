@@ -6,7 +6,7 @@ const knex = require('knex');
 const signin = require('./controllers/signin');
 const register = require('./controllers/register');
 const image = require('./controllers/image');
-const profileId = require('./controllers/profileId');
+const profile = require('./controllers/profile');
 
 const app = express();
 app.use(express.json());
@@ -31,7 +31,7 @@ app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcry
 
 app.put('/image', (req, res) => { image.handleImage(req, res, db); });
 
-app.get('/profile/:id', (req, res) => { profileId.handleProfileId(req, res, db); });
+app.get('/profile/:id', (req, res) => { profile.handleProfile(req, res, db); });
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=> {
