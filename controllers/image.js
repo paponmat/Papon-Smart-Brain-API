@@ -61,10 +61,10 @@ const handleClarifai = async (req, res) => {
             returnClarifaiRequestOptions(input)
             );
         if (clarifaiResponse) {
-            console.log('test');
-            res.json(clarifaiResponse);
+            const faceData = await clarifaiResponse.json();
+            return res.json(faceData);
         } else {
-            res.status(400).json('Unable to detect face');
+            return res.status(400).json('Unable to detect face');
         }
     } catch (error) {
         res.status(500).json('Internal server error');
