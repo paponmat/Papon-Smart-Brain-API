@@ -1,7 +1,8 @@
-const PAT = 'c5399a2074724d5e9e660023be3cd7d1';
-const USER_ID = 'paponmat';  
-const APP_ID = 'Smart-Brain';
-const MODEL_ID = 'face-detection';
+const fetch = require('node-fetch');
+const CLARIFAI_API_KEY = process.env.CLARIFAI_API_KEY;
+const USER_ID = process.env.USER_ID;
+const APP_ID = process.env.APP_ID;
+const MODEL_ID = process.env.MODEL_ID;
 
 const handleImage = async (req, res, db) => {
     const { id } = req.body;
@@ -45,7 +46,7 @@ const returnClarifaiRequestOptions = (imageUrl) => {
       method: 'POST',
       headers: {
           'Accept': 'application/json',
-          'Authorization': 'Key ' + PAT
+          'Authorization': 'Key ' + CLARIFAI_API_KEY
       },
       body: raw
     };
