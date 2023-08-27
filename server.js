@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors')
 const bcrypt = require('bcrypt');
 const knex = require('knex');
-const knexConfig = require('./knexConfig');
+const knexConfig = require('./config/knexConfig');
 
 const signin = require('./controllers/signin');
 const register = require('./controllers/register');
