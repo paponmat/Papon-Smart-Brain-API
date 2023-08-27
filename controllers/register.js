@@ -14,7 +14,6 @@ const handleRegister = async (req, res, db, bcrypt) => {
         // Check if the email already exists in the 'login' table
         const existingUser = await db('login').where('email', email);
         if (existingUser.length > 0) {
-            console.log("Email already exists"); // Debug log
             return res.status(400).json('Email already exists');
         }
 

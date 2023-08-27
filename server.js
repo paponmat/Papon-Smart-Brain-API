@@ -41,7 +41,7 @@ app.listen(PORT, ()=> {
     console.log(`App is running on port ${PORT}`);
 });
 
-console.log(process.env.PORT);
+// console.log(process.env.PORT);
 
 // const DATABASE_URL = process.env.DATABASE_URL;
 // app.listen(DATABASE_URL, ()=> {
