@@ -7,7 +7,6 @@ const signin = require('./controllers/signin');
 const register = require('./controllers/register');
 const image = require('./controllers/image');
 const profile = require('./controllers/profile');
-const clarifai = require('./controllers/image');
 
 const app = express();
 app.use(express.json());
@@ -32,7 +31,7 @@ app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcry
 
 app.put('/image', (req, res) => { image.handleImage(req, res, db); });
 
-app.post('/clarifai' , (req, res) => { image.handleClarifai(req, res); } )
+app.post('/clarifai' , (req, res) => { image.handleClarifai(req, res); } );
 
 app.get('/profile/:id', (req, res) => { profile.handleProfile(req, res, db); });
 

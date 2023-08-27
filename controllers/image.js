@@ -69,8 +69,6 @@ const handleClarifai = async (req, res) => {
     } catch (error) {
         res.status(500).json('Internal server error');
     }
-    
-
 }
 
 module.exports = {
