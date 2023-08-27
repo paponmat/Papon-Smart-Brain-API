@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors')
 const bcrypt = require('bcrypt');
 const knex = require('knex');
+const knexConfig = require('./knexConfig');
 
 const signin = require('./controllers/signin');
 const register = require('./controllers/register');
@@ -12,16 +13,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const db = knex({
-    client: 'pg',
-    connection: {
-      host : '127.0.0.1', //localhost
-      port : 5432,
-      user : 'postgres',
-      password : 'test',
-      database : 'smart-brain'
-    }
-});
+const db = knex(knexConfig);
 
 app.get('/', (req , res) => { res.send('API is working'); });
 
