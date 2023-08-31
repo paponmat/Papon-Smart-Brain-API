@@ -23,5 +23,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # my_secret_files
-/config/server.crt
-/config/server.key
+server.crt
+server.key
+
